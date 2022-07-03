@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp } from 'firebase/app';
 import {
   getAuth,
   signInWithRedirect,
@@ -7,16 +7,17 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-} from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+  onAuthStateChanged,
+} from 'firebase/auth';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBHQwP3GrxAfjzZ1cuPcz04wLJCnxyfCsY",
-  authDomain: "crown-18057.firebaseapp.com",
-  projectId: "crown-18057",
-  storageBucket: "crown-18057.appspot.com",
-  messagingSenderId: "348693292316",
-  appId: "1:348693292316:web:3129d19fe669e6da2246d9",
+  apiKey: "AIzaSyB6xaoZzFbZK2z4cAP09x5QxAxGWM0ctjo",
+  authDomain: "vite-crown.firebaseapp.com",
+  projectId: "vite-crown",
+  storageBucket: "vite-crown.appspot.com",
+  messagingSenderId: "232285849900",
+  appId: "1:232285849900:web:e5dca21b227be009344489"
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -24,7 +25,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 const googleProvider = new GoogleAuthProvider();
 
 googleProvider.setCustomParameters({
-  prompt: "select_account",
+  prompt: 'select_account',
 });
 
 export const auth = getAuth();
@@ -41,7 +42,7 @@ export const createUserDocumentFromAuth = async (
 ) => {
   if (!userAuth) return;
 
-  const userDocRef = doc(db, "users", userAuth.uid);
+  const userDocRef = doc(db, 'users', userAuth.uid);
 
   const userSnapshot = await getDoc(userDocRef);
 
@@ -57,7 +58,7 @@ export const createUserDocumentFromAuth = async (
         ...additionalInformation,
       });
     } catch (error) {
-      console.log("error creating the user", error.message);
+      console.log('error creating the user', error.message);
     }
   }
 
@@ -73,7 +74,18 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
 
-  return await signInWithEmailAndPassword(auth, email, password);
+  await signInWithEmailAndPassword(auth, email, password);
+
+  onAuthStateChanged(function(user) {
+  if (user) {
+    console.log('logged in')
+  } else {
+    console.log('.,,,k,                           not logged in')
+  }
+});
 };
 
 export const signOutUser = async () => await signOut(auth);
+
+export const onAuthStateChangedListener = (callback) =>
+  onAuthStateChanged(auth, callback);
